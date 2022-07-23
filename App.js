@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, LogBox, View } from 'react-native';
+import { StyleSheet, LogBox, SafeAreaView } from 'react-native';
 import './ignoreWarnings';
 
 //Screens
@@ -11,9 +11,9 @@ export default function App() {
   //<Header /> quitamos la imagen antes del ProductContainer y ponemos un texto
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ProductContainer />
-    </View>
+    </SafeAreaView>
   );
 }
 

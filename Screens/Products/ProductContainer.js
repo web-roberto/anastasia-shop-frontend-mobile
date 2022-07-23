@@ -10,9 +10,12 @@ import {
 import { Container, Header, Icon, Item, Input, Text } from 'native-base';
 
 const data = require('../../assets/data/products.json');
+const productsCategories = require('../../assets/data/categories.json');
+
 import ProductList from './ProductList';
 import SearchedProduct from './SearchedProducts';
 import Banner from '../../Shared/Banner';
+import CategoryFilter from './CategoryFilter';
 
 const { height } = Dimensions.get('window');
 
@@ -20,15 +23,25 @@ const ProductContainer = () => {
   const [products, setProducts] = useState([]);
   const [productsFiltered, setProductsFiltered] = useState([]);
   const [focus, setFocus] = useState();
+  const [categories, setCategories] = useState([]);
+  const [productsCtg, setProductsCtg] = useState([]);
+  const [active, setActive] = useState();
+  const [initialState, setInitialState] = useState([]);
 
   useEffect(() => {
     setProducts(data);
     setProductsFiltered(data);
     setFocus(false);
+    setCategories(productsCategories);
+    setActive(-1);
+    setInitialState(data);
     return () => {
       setProducts([]);
       setProductsFiltered([]);
       setFocus();
+      setCategories([]);
+      setActive();
+      setInitialState();
     };
   }, []);
   //horizontal
@@ -45,6 +58,19 @@ const ProductContainer = () => {
     setFocus(false);
   };
 
+  const changeCtg = (ctg) => {
+    {
+      ctg == 'all'
+        ? [setProductsCtg(initialState), setActive(true)]
+        : [
+            setProductsCtg(
+              products.filter((i) => (i.category.$soid = ctg)),
+              setActive(true)
+            ),
+          ];
+    }
+  };
+
   return (
     <Container>
       <Text style={styles.head}> L'amour de soi </Text>
@@ -52,6 +78,15 @@ const ProductContainer = () => {
       <Text style={styles.title}>собственное украинское производство </Text>
       <View style={styles.containerBanner}>
         <Banner />
+      </View>
+      <View style={styles.containerCategoryFilter}>
+        <CategoryFilter
+          categories={categories}
+          categoryFilter={changeCtg}
+          productsCtg={productsCtg}
+          active={active}
+          setActive={setActive}
+        />
       </View>
       <Header searchBar rounded>
         <Item>
@@ -96,6 +131,9 @@ const styles = StyleSheet.create({
   containerBanner: {
     height: height / 4,
   },
+  containerCategoryFilter: {
+    height: height / 15,
+  },
   listContainer: {
     height: height,
     flex: 1,
@@ -114,7 +152,7 @@ const styles = StyleSheet.create({
     padding: 2,
     marginTop: 0, //Todo: Delete
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
     color: 'black',
   },
@@ -124,7 +162,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   head: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 25,
     textAlign: 'center',
   },
